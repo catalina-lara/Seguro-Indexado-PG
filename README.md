@@ -25,7 +25,7 @@ Antes de correr los notebooks, descarga esa carpeta y colócala en la raíz del 
 
 ## Estructura del proyecto
 
-\`\`\`
+```
 Seguro-Indexado-PG/
 ├── scripts/                          # Pipeline completo, en orden de ejecución
 │   ├── Preprocesamiento.ipynb        # 1. Extracción y limpieza de fuentes crudas (GEE, Agronet, FNC)
@@ -38,7 +38,7 @@ Seguro-Indexado-PG/
 │   ├── .streamlit/config.toml
 │   └── (8 artefactos generados automáticamente — ver abajo)
 └── README.md
-\`\`\`
+```
 
 ## ¿Cómo reproducir los datos?
 
