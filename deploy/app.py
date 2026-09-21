@@ -330,6 +330,25 @@ if vista == "Analista":
     c2.metric("RMSE", f"{m['rmse']:.3f} t/ha", "Cumple D1" if m["cumple_d1"] else "No cumple D1", delta_color="off")
     c3.metric("MAE", f"{m['mae']:.3f} t/ha", "Cumple D1" if m["cumple_d1"] else "No cumple D1", delta_color="off")
     c4.metric("Observaciones", f"{m['n_observaciones']}")
+
+    # --- Cumplimiento de requerimientos de negocio (N1-N4) — visible sin exportar nada (F4) ---
+    er = CONFIG.get("evaluacion_requerimientos", {})
+    n1, n3, n4 = er.get("N1_riesgo_base", {}), er.get("N3_frecuencia_activacion", {}), er.get("N4_diferenciacion_municipal", {})
+
+    def badge(cumple):
+        if cumple is True:
+            return "🟢 Cumple"
+        if cumple is False:
+            return "🔴 No cumple"
+        return "🟡 Parcial"
+
+    st.markdown("**Cumplimiento de requerimientos de negocio**")
+    n1c, n2c, n3c, n4c = st.columns(4)
+    n1c.markdown(f"**N1** · Riesgo base\n\n{badge(n1.get('cumple'))}\n\n<span style='font-size:12px'>Criterio: {n1.get('criterio','—')}</span>", unsafe_allow_html=True)
+    n2c.markdown(f"**N2** · Desempeño mínimo\n\n{badge(m['cumple_n2'])}\n\n<span style='font-size:12px'>R² ≥ 0.35</span>", unsafe_allow_html=True)
+    n3c.markdown(f"**N3** · Frecuencia activación\n\n{badge(n3.get('cumple'))}\n\n<span style='font-size:12px'>Resultado: {n3.get('resultado_pct', 0):.1f}%</span>", unsafe_allow_html=True)
+    n4c.markdown(f"**N4** · Diferenciación municipal\n\n{badge(n4.get('cumple'))}\n\n<span style='font-size:12px'>{n4.get('cumple','—')}</span>", unsafe_allow_html=True)
+
     st.divider()
 
     # --------------------------------------------------------------------------------
