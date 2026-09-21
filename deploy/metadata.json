@@ -1,0 +1,117 @@
+{
+  "proyecto": "Seguro Agrícola Indexado de Café en Boyacá",
+  "generado": "2026-09-21",
+  "granularidad": "anual-municipal",
+  "cobertura": {
+    "anios": "2007-2025",
+    "municipios_totales": 53,
+    "filas_panel_crudo": 805
+  },
+  "fuentes_de_datos": [
+    {
+      "nombre": "ERA5-Land (GEE)",
+      "variables": "temperatura, humedad de suelo",
+      "acceso": "público, API Google Earth Engine"
+    },
+    {
+      "nombre": "TerraClimate (GEE)",
+      "variables": "precipitación, PET/AET, déficit hídrico, PDSI, humedad de suelo",
+      "acceso": "público, API Google Earth Engine"
+    },
+    {
+      "nombre": "CHIRPS (GEE)",
+      "variables": "precipitación diaria",
+      "acceso": "público, API Google Earth Engine"
+    },
+    {
+      "nombre": "MODIS MOD13Q1 (GEE)",
+      "variables": "NDVI, EVI",
+      "acceso": "público, API Google Earth Engine"
+    },
+    {
+      "nombre": "DEM SRTM (GEE)",
+      "variables": "elevación (media y desviación estándar municipal)",
+      "acceso": "público, API Google Earth Engine"
+    },
+    {
+      "nombre": "Agronet",
+      "variables": "rendimiento, producción, área cultivada",
+      "acceso": "público, https://agronet.gov.co/estadisticas/agricola"
+    },
+    {
+      "nombre": "Federación Nacional de Cafeteros (FNC)",
+      "variables": "producción nacional de café",
+      "acceso": "público, https://federaciondecafeteros.org/estadisticas-cafeteras/"
+    }
+  ],
+  "pipeline": [
+    {
+      "notebook": "Preprocesamiento.ipynb",
+      "funcion": "Extracción cruda de las fuentes GEE y limpieza inicial"
+    },
+    {
+      "notebook": "Preprocesamiento_2.ipynb",
+      "funcion": "Agregación anual-municipal, cálculo de anomalías históricas (historical_anomaly), variables de ventana crítica del ciclo del café"
+    },
+    {
+      "notebook": "Modelado.ipynb",
+      "funcion": "5 iteraciones de modelado (base, selección de variables, seccional/fenología, hiperparámetros, dummies de municipio), validación LOYO, SHAP, evaluación N2/D1-D4, regularización (Iteración 6), ensamble descartado (Iteración 7)"
+    },
+    {
+      "notebook": "Indice_parametrico.ipynb",
+      "funcion": "Construcción del índice paramétrico v1/v2, curva de payout, evaluación N1/N3/N4, exportación para el dashboard"
+    }
+  ],
+  "calendario_fenologico_por_seccional": {
+    "Ricaurte": {
+      "floracion_principal": [
+        10,
+        12
+      ],
+      "traviesa": [
+        4,
+        5
+      ]
+    },
+    "Lengupa": {
+      "floracion_principal": [
+        10,
+        12
+      ],
+      "traviesa": null
+    },
+    "Occidente": {
+      "floracion_principal": [
+        4,
+        6
+      ],
+      "traviesa": [
+        9,
+        10
+      ]
+    },
+    "generico (Valle_Tenza / sin clasificar)": {
+      "floracion_principal": [
+        3,
+        4
+      ],
+      "traviesa": null
+    }
+  },
+  "modelo_final": {
+    "iteracion": "1_base",
+    "algoritmo": "Gradient_Boosting",
+    "r2_loyo": 0.11160248405356643,
+    "rmse": 0.2502187098235242,
+    "mae": 0.20080408711498463,
+    "n_features": 54
+  },
+  "indice_parametrico": {
+    "version": "v2_doble_disparador_payout_poly",
+    "descripcion": "Doble disparador (sequía/exceso hídrico) con curva de payout polinómica grado 2"
+  },
+  "despliegue": {
+    "tecnologia": "Streamlit Community Cloud",
+    "repositorio": "GitHub (Seguro-Indexado-PG)"
+  }
+}
